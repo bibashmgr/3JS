@@ -9,76 +9,39 @@ export default class Model {
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
 
-    console.log(this.resources);
-
-    this.model = this.resources.items.model;
-    this.actualModel = this.model.scene;
-
-    // this.setBox();
-    this.setFloor();
-    this.setModel();
-    // this.setBoxAnimation();
-    this.setModelAnimation();
+    this.setBoard();
   }
 
-  setBox() {
-    const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-    const boxMaterial = new THREE.MeshNormalMaterial();
-    this.boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    this.scene.add(this.boxMesh);
-    this.boxMesh.position.y = 1;
-    this.boxMesh.castShadow = true;
-    this.boxMesh.receiveShadow = true;
-  }
+  setBoard() {
+    const boardGeometry = new THREE.BoxGeometry(1, 0.5, 1);
+    const boardLightMaterial = new THREE.MeshBasicMaterial({
+      color: 0xd9965f,
+    });
+    const boardDarkMaterial = new THREE.MeshBasicMaterial({
+      color: 0x090000,
+    });
 
-  setModel() {
-    this.actualModel.children.forEach((child) => {
-      child.castShadow = true;
-      child.receiveShadow = true;
+    this.board = new THREE.Group();
 
-      if (child instanceof THREE.Group) {
-        child.children.forEach((groupChild) => {
-          groupChild.castShadow = true;
-          groupChild.receiveShadow = true;
-        });
+    let divisions = 10;
+
+    for (let rows = 0; rows < divisions; rows++) {
+      for (let cols = 0; cols < divisions; cols++) {
+        let boardMesh = new THREE.Mesh(
+          boardGeometry,
+          (rows + cols) % 2 === 0 ? boardLightMaterial : boardDarkMaterial
+        );
+        boardMesh.position.x = -4.5 + rows;
+        boardMesh.position.z = -4.5 + cols;
+        boardMesh.position.y = -0.5;
+        this.board.add(boardMesh);
       }
-    });
+    }
 
-    this.scene.add(this.actualModel);
-    this.actualModel.scale.set(0.5, 0.5, 0.5);
-    this.actualModel.position.y = 1;
-    this.actualModel.castShadow = true;
-    this.actualModel.receiveShadow = true;
-  }
-
-  setFloor() {
-    this.geometry = new THREE.PlaneGeometry(10, 10);
-    this.material = new THREE.MeshStandardMaterial({
-      color: 0xffe6a2,
-      side: THREE.BackSide,
-    });
-    this.plane = new THREE.Mesh(this.geometry, this.material);
-    this.scene.add(this.plane);
-    this.plane.rotation.x = Math.PI / 2;
-    this.plane.receiveShadow = true;
-  }
-
-  setBoxAnimation() {
-    this.boxMesh.rotation.x += 0.01;
-    this.boxMesh.rotation.y += 0.01;
-    this.boxMesh.rotation.z += 0.01;
-  }
-
-  setModelAnimation() {
-    this.actualModel.rotation.x += 0.01;
-    this.actualModel.rotation.y += 0.01;
-    this.actualModel.rotation.z += 0.01;
+    this.scene.add(this.board);
   }
 
   resize() {}
 
-  update() {
-    // this.setBoxAnimation();
-    this.setModelAnimation();
-  }
+  update() {}
 }

@@ -23,9 +23,7 @@ export default class Camera {
       0.1,
       1000
     );
-    this.perspectiveCamera.position.x = 10;
-    this.perspectiveCamera.position.y = 7.5;
-    this.perspectiveCamera.position.z = 10;
+    this.perspectiveCamera.position.y = 25;
 
     this.scene.add(this.perspectiveCamera);
   }
@@ -48,8 +46,8 @@ export default class Camera {
     const size = 10;
     const divisions = 10;
 
-    const gridHelper = new THREE.GridHelper(size, divisions);
-    this.scene.add(gridHelper);
+    // const gridHelper = new THREE.GridHelper(size, divisions);
+    // this.scene.add(gridHelper);
 
     const axesHelper = new THREE.AxesHelper(size / 2);
     this.scene.add(axesHelper);
@@ -59,6 +57,9 @@ export default class Camera {
     this.controls = new OrbitControls(this.perspectiveCamera, this.canvas);
     this.controls.enableDamping = true;
     this.controls.enableZoom = true;
+    this.controls.enablePan = false;
+    this.controls.maxPolarAngle = Math.PI / 2;
+    this.controls.target.set(0, 0, 0);
   }
 
   resize() {
