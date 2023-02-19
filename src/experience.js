@@ -13,7 +13,7 @@ import Resources from './utils/resources.js';
 import assets from './config/assets.js';
 
 // world
-import World from './world/index.js';
+import World from './world/world.js';
 
 export default class Experience {
   static instance;
