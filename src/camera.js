@@ -23,7 +23,7 @@ export default class Camera {
       0.1,
       1000
     );
-    this.perspectiveCamera.position.y = 25;
+    this.perspectiveCamera.position.y = 15;
 
     this.scene.add(this.perspectiveCamera);
   }
