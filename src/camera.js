@@ -46,20 +46,20 @@ export default class Camera {
     const size = 10;
     const divisions = 10;
 
-    // const gridHelper = new THREE.GridHelper(size, divisions);
-    // this.scene.add(gridHelper);
+    const gridHelper = new THREE.GridHelper(size, divisions);
+    this.scene.add(gridHelper);
 
     const axesHelper = new THREE.AxesHelper(size / 2);
     this.scene.add(axesHelper);
   }
 
   setOrbitControls() {
-    this.controls = new OrbitControls(this.perspectiveCamera, this.canvas);
-    this.controls.enableDamping = true;
-    this.controls.enableZoom = true;
-    this.controls.enablePan = false;
-    this.controls.maxPolarAngle = Math.PI / 2;
-    this.controls.target.set(0, 0, 0);
+    this.orbitControls = new OrbitControls(this.perspectiveCamera, this.canvas);
+    this.orbitControls.enableDamping = true;
+    this.orbitControls.enableZoom = true;
+    this.orbitControls.enablePan = false;
+    this.orbitControls.maxPolarAngle = Math.PI / 2;
+    this.orbitControls.target.set(0, 0, 0);
   }
 
   resize() {
@@ -76,6 +76,6 @@ export default class Camera {
   }
 
   update() {
-    this.controls.update();
+    this.orbitControls.update();
   }
 }
