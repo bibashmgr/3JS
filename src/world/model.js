@@ -9,95 +9,114 @@ export default class Model {
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
 
-    this.setBoard();
-    this.setChecker();
-
-    console.log(this.scene.children[4]);
+    this.setFloor();
+    this.setBulbs();
   }
 
-  setBoard() {
-    const boardGeometry = new THREE.BoxGeometry(1, 0.5, 1);
-    const boardLightMaterial = new THREE.MeshStandardMaterial({
-      color: 0xa17639,
-    });
-    const boardDarkMaterial = new THREE.MeshStandardMaterial({
-      color: 0x371509,
+  setFloor() {
+    const floorGeometry = new THREE.BoxGeometry(25, 0.5, 25);
+    const floorMaterial = new THREE.MeshStandardMaterial({
+      color: 0x00ff00,
     });
 
-    this.board = new THREE.Group();
+    this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
 
-    let divisions = 8;
-    let meshNumber = 1;
+    this.floor.castShadow = true;
+    this.floor.receiveShadow = true;
 
-    for (let rows = 0; rows < divisions; rows++) {
-      for (let cols = 0; cols < divisions; cols++) {
-        let boardMesh = new THREE.Mesh(
-          boardGeometry,
-          (rows + cols) % 2 === 0 ? boardLightMaterial : boardDarkMaterial
-        );
-        boardMesh.userData.meshNumber = meshNumber;
-        meshNumber++;
-        boardMesh.position.set(-3.5 + rows, -0.25, -3.5 + cols);
-        boardMesh.receiveShadow = true;
-        boardMesh.castShadow = true;
-
-        this.board.add(boardMesh);
-      }
-    }
-
-    this.board.castShadow = true;
-    this.board.receiveShadow = true;
-
-    this.scene.add(this.board);
+    this.scene.add(this.floor);
   }
 
-  setChecker() {
-    const checkerGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.25, 32);
-    const checkerLightMaterial = new THREE.MeshStandardMaterial({
-      color: 0x6b0808,
+  setLightBulb() {
+    let intensity = 1;
+
+    let lightBulb = new THREE.Group();
+
+    // bulb-sphere
+    let bulbSphereGeo = new THREE.SphereGeometry(0.5, 32, 32);
+    let bulbSphereLight = new THREE.PointLight(0xffee88, 1, 100, 2);
+    let bulbSphereMat = new THREE.MeshStandardMaterial({
+      emissive: 0xffffff,
+      emissiveIntensity: intensity,
+      color: 0xffffee,
+      roughness: 1,
     });
-    const checkerDarkMaterial = new THREE.MeshStandardMaterial({
-      color: 0x1f2524,
+    bulbSphereLight.add(new THREE.Mesh(bulbSphereGeo, bulbSphereMat));
+    bulbSphereLight.position.set(0, 0, 0);
+    bulbSphereLight.castShadow = true;
+
+    // bulb-stem
+    let bulbStemGeo = new THREE.CylinderGeometry(0.25, 0.3125, 0.3, 32);
+    let bulbStemMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      emissive: 0xffffff,
+      emissiveIntensity: intensity,
+      metalness: 0.8,
+      roughness: 0,
     });
 
-    this.checker = new THREE.Group();
+    let bulbStem = new THREE.Mesh(bulbStemGeo, bulbSphereMat);
+    bulbStem.position.set(0, 0.5, 0);
+    bulbStem.castShadow = true;
+    bulbStem.receiveShadow = true;
 
-    for (let rows = 0; rows < 8; rows++) {
-      for (let cols = 0; cols < 8; cols++) {
-        if (cols < 3) {
-          if ((rows + cols) % 2 === 0) {
-            let checkerMesh = new THREE.Mesh(
-              checkerGeometry,
-              checkerLightMaterial
-            );
-            checkerMesh.position.x = -3.5 + rows;
-            checkerMesh.position.z = -3.5 + cols;
-            checkerMesh.position.y = 0.125;
-            checkerMesh.receiveShadow = true;
-            checkerMesh.castShadow = true;
+    //blub-plug
+    let bulbPlugGeo = new THREE.CylinderGeometry(0.25, 0.25, 0.7, 32);
+    let bulbPlugMat = new THREE.MeshStandardMaterial({
+      color: 0x807d7a,
+    });
 
-            this.checker.add(checkerMesh);
-          }
-        }
-        if (cols > 4) {
-          if ((rows + cols) % 2 !== 0) {
-            let checkerMesh = new THREE.Mesh(
-              checkerGeometry,
-              checkerDarkMaterial
-            );
-            checkerMesh.position.x = -3.5 + rows;
-            checkerMesh.position.z = -3.5 + cols;
-            checkerMesh.position.y = 0.125;
-            checkerMesh.receiveShadow = true;
-            checkerMesh.castShadow = true;
+    let bulbPlug = new THREE.Mesh(bulbPlugGeo, bulbPlugMat);
+    bulbPlug.position.set(0, 0.6, 0);
+    bulbPlug.receiveShadow = true;
+    bulbPlug.castShadow = true;
 
-            this.checker.add(checkerMesh);
-          }
-        }
-      }
+    //blub-plug-top
+    var bulbTopGeo = new THREE.CylinderGeometry(0.125, 0.15, 0.1, 32);
+    var bulbTopMat = new THREE.MeshStandardMaterial({
+      color: 0x807d7a,
+    });
+    var bulbTop = new THREE.Mesh(bulbTopGeo, bulbTopMat);
+    bulbTop.position.set(0, 1, 0);
+    bulbTop.receiveShadow = true;
+    bulbTop.castShadow = true;
+
+    //blub-plug-rings
+    let bulbRingGeo = new THREE.TorusGeometry(0.26, 0.02, 4, 100);
+    let bulbRingMat = new THREE.MeshStandardMaterial({
+      color: 0x807d7a,
+    });
+
+    let ringY = 0.65;
+    for (let i = 0; i < 4; i++) {
+      var bulbRing = new THREE.Mesh(bulbRingGeo, bulbRingMat);
+      bulbRing.rotation.x = -Math.PI / 2;
+      bulbRing.position.set(0, ringY, 0);
+      lightBulb.add(bulbRing);
+
+      ringY += 0.1;
     }
 
-    this.scene.add(this.checker);
+    lightBulb.add(bulbSphereLight);
+    lightBulb.add(bulbStem);
+    lightBulb.add(bulbPlug);
+    lightBulb.add(bulbTop);
+
+    return lightBulb;
+  }
+
+  setBulbs() {
+    this.bulbs = new THREE.Group();
+
+    for (let i = 0; i < 5; i++) {
+      let bulb = this.setLightBulb();
+      let positionX = Math.random() * 25 - 12.5;
+      let positionZ = Math.random() * 25 - 12.5;
+      bulb.position.set(positionX, 3, positionZ);
+      this.bulbs.add(bulb);
+    }
+
+    this.scene.add(this.bulbs);
   }
 
   resize() {}
