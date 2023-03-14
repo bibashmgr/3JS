@@ -10,13 +10,13 @@ export default class Model {
     this.resources = this.experience.resources;
 
     this.setFloor();
-    this.setBulbs();
+    this.setLightBulb();
   }
 
   setFloor() {
     const floorGeometry = new THREE.BoxGeometry(25, 0.5, 25);
     const floorMaterial = new THREE.MeshStandardMaterial({
-      color: 0x00ff00,
+      color: 0xaabbcc,
     });
 
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -55,7 +55,7 @@ export default class Model {
       roughness: 0,
     });
 
-    let bulbStem = new THREE.Mesh(bulbStemGeo, bulbSphereMat);
+    let bulbStem = new THREE.Mesh(bulbStemGeo, bulbStemMat);
     bulbStem.position.set(0, 0.5, 0);
     bulbStem.castShadow = true;
     bulbStem.receiveShadow = true;
@@ -102,21 +102,9 @@ export default class Model {
     lightBulb.add(bulbPlug);
     lightBulb.add(bulbTop);
 
-    return lightBulb;
-  }
+    lightBulb.position.y = 3;
 
-  setBulbs() {
-    this.bulbs = new THREE.Group();
-
-    for (let i = 0; i < 5; i++) {
-      let bulb = this.setLightBulb();
-      let positionX = Math.random() * 25 - 12.5;
-      let positionZ = Math.random() * 25 - 12.5;
-      bulb.position.set(positionX, 3, positionZ);
-      this.bulbs.add(bulb);
-    }
-
-    this.scene.add(this.bulbs);
+    this.scene.add(lightBulb);
   }
 
   resize() {}
