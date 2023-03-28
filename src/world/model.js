@@ -16,43 +16,24 @@ export default class Model {
     this.cursor = this.experience.cursor;
 
     this.setPlane();
-    this.animatePlane();
   }
 
   setPlane() {
     this.geometry = new THREE.PlaneGeometry(10, 10, 100, 100);
-    this.material = new THREE.RawShaderMaterial({
+    this.material = new THREE.ShaderMaterial({
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      uniforms: {
-        uTime: { type: 'f', value: 0 },
-        uHue: { type: 'f', value: 0.56 },
-        uHueVariation: { type: 'f', value: 0 },
-        uDensity: { type: 'f', value: 0.75 },
-        uDisplacement: { type: 'f', value: 0.75 },
-        uCursorPosition: { type: 'v2', value: new THREE.Vector2(0.5, 0.5) },
-      },
-      wireframe: false,
+      uniforms: {},
+      wireframe: true,
       side: THREE.DoubleSide,
     });
     this.plane = new THREE.Mesh(this.geometry, this.material);
     this.scene.add(this.plane);
   }
 
-  animatePlane() {
-    this.plane.material.uniforms.uTime.value = this.time.elapsed * 0.003;
-  }
-
   resize() {}
 
-  update() {
-    this.animatePlane();
-  }
+  update() {}
 
-  cursorMove() {
-    this.plane.material.uniforms.uCursorPosition.value = new THREE.Vector2(
-      this.cursor.position.x,
-      this.cursor.position.y
-    );
-  }
+  cursorMove() {}
 }
