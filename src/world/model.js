@@ -3,82 +3,56 @@ import * as THREE from 'three';
 // src
 import Experience from '../experience.js';
 
+// shaders
+import vertexShader from '../shaders/vertex_shader.glsl';
+import fragmentShader from '../shaders/fragment_shader.glsl';
+
 export default class Model {
   constructor() {
     this.experience = new Experience();
+    this.time = this.experience.time;
     this.scene = this.experience.scene;
-    this.resources = this.experience.resources;
+    this.time = this.experience.time;
+    this.cursor = this.experience.cursor;
 
-    console.log(this.resources);
-
-    this.model = this.resources.items.model;
-    this.actualModel = this.model.scene;
-
-    // this.setBox();
-    this.setFloor();
-    this.setModel();
-    // this.setBoxAnimation();
-    this.setModelAnimation();
+    this.setPlane();
+    this.animatePlane();
   }
 
-  setBox() {
-    const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-    const boxMaterial = new THREE.MeshNormalMaterial();
-    this.boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    this.scene.add(this.boxMesh);
-    this.boxMesh.position.y = 1;
-    this.boxMesh.castShadow = true;
-    this.boxMesh.receiveShadow = true;
-  }
-
-  setModel() {
-    this.actualModel.children.forEach((child) => {
-      child.castShadow = true;
-      child.receiveShadow = true;
-
-      if (child instanceof THREE.Group) {
-        child.children.forEach((groupChild) => {
-          groupChild.castShadow = true;
-          groupChild.receiveShadow = true;
-        });
-      }
-    });
-
-    this.scene.add(this.actualModel);
-    this.actualModel.scale.set(0.5, 0.5, 0.5);
-    this.actualModel.position.y = 1;
-    this.actualModel.castShadow = true;
-    this.actualModel.receiveShadow = true;
-  }
-
-  setFloor() {
-    this.geometry = new THREE.PlaneGeometry(10, 10);
-    this.material = new THREE.MeshStandardMaterial({
-      color: 0xffe6a2,
-      side: THREE.BackSide,
+  setPlane() {
+    this.geometry = new THREE.PlaneGeometry(10, 10, 100, 100);
+    this.material = new THREE.RawShaderMaterial({
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      uniforms: {
+        uTime: { type: 'f', value: 0 },
+        uHue: { type: 'f', value: 0.56 },
+        uHueVariation: { type: 'f', value: 0 },
+        uDensity: { type: 'f', value: 0.75 },
+        uDisplacement: { type: 'f', value: 0.75 },
+        uCursorPosition: { type: 'v2', value: new THREE.Vector2(0.5, 0.5) },
+      },
+      wireframe: false,
+      side: THREE.DoubleSide,
     });
     this.plane = new THREE.Mesh(this.geometry, this.material);
     this.scene.add(this.plane);
-    this.plane.rotation.x = Math.PI / 2;
-    this.plane.receiveShadow = true;
   }
 
-  setBoxAnimation() {
-    this.boxMesh.rotation.x += 0.01;
-    this.boxMesh.rotation.y += 0.01;
-    this.boxMesh.rotation.z += 0.01;
-  }
-
-  setModelAnimation() {
-    this.actualModel.rotation.x += 0.01;
-    this.actualModel.rotation.y += 0.01;
-    this.actualModel.rotation.z += 0.01;
+  animatePlane() {
+    this.plane.material.uniforms.uTime.value = this.time.elapsed * 0.003;
   }
 
   resize() {}
 
   update() {
-    // this.setBoxAnimation();
-    this.setModelAnimation();
+    this.animatePlane();
+  }
+
+  cursorMove() {
+    this.plane.material.uniforms.uCursorPosition.value = new THREE.Vector2(
+      this.cursor.position.x,
+      this.cursor.position.y
+    );
   }
 }

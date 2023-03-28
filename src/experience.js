@@ -8,6 +8,7 @@ import Renderer from './renderer.js';
 import Sizes from './utils/sizes.js';
 import Time from './utils/time.js';
 import Resources from './utils/resources.js';
+import Cursor from './utils/cursor.js';
 
 // config
 import assets from './config/assets.js';
@@ -31,6 +32,7 @@ export default class Experience {
     this.camera = new Camera();
     this.renderer = new Renderer();
     this.resources = new Resources(assets);
+    this.cursor = new Cursor();
 
     this.world = new World();
 
@@ -39,6 +41,9 @@ export default class Experience {
     });
     this.time.on('update', () => {
       this.update();
+    });
+    this.cursor.on('cursorMove', () => {
+      this.cursorMove();
     });
   }
 
@@ -51,5 +56,9 @@ export default class Experience {
     this.camera.update();
     this.renderer.update();
     this.world.update();
+  }
+
+  cursorMove() {
+    this.world.cursorMove();
   }
 }
