@@ -14,26 +14,46 @@ export default class Model {
     this.scene = this.experience.scene;
     this.time = this.experience.time;
     this.cursor = this.experience.cursor;
+    this.resources = this.experience.resources;
 
     this.setPlane();
+    this.animatePlane();
   }
 
   setPlane() {
-    this.geometry = new THREE.PlaneGeometry(10, 10, 100, 100);
+    this.geometry = new THREE.PlaneGeometry(1, 1, 25, 25);
     this.material = new THREE.ShaderMaterial({
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      uniforms: {},
-      wireframe: true,
+      uniforms: {
+        uTime: {
+          type: 'f',
+          value: 0.0,
+        },
+        uTexture: {
+          value: this.resources.items.planeTexture,
+        },
+        uProg: {
+          type: 'f',
+          value: 1.0,
+        },
+      },
+      wireframe: false,
       side: THREE.DoubleSide,
     });
     this.plane = new THREE.Mesh(this.geometry, this.material);
     this.scene.add(this.plane);
   }
 
+  animatePlane() {
+    this.plane.material.uniforms.uTime.value = this.time.elapsed * 0.001;
+  }
+
   resize() {}
 
-  update() {}
+  update() {
+    this.animatePlane();
+  }
 
   cursorMove() {}
 }

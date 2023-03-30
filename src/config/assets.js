@@ -1,12 +1,12 @@
 export default [
   // {
   //   name: '',
-  //   type: ['glbModel', 'basicTexture', 'videoTexture'],
+  //   type: ['glbModel', 'basicTexture', 'videoTexture', 'normalTexture'],
   //   path: '',
   // },
-  // {
-  //   name: 'model',
-  //   type: 'glbModel',
-  //   path: '/models/box.glb',
-  // },
+  {
+    name: 'planeTexture',
+    type: 'normalTexture',
+    path: '/textures/planeTexture.jpg',
+  },
 ];
